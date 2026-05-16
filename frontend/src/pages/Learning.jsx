@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Grid, Button, IconButton, LinearProgress, Divider, Chip } from '@mui/material';
 import { Play, SkipForward, CheckCircle, Info, Clock, Award, Zap } from 'lucide-react';
+import { cognitiveService } from '../services/cognitiveService';
+import { adaptiveService } from '../services/adaptiveService';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Learning = () => {
   const [progress, setProgress] = useState(0);
   const [activeConcept, setActiveConcept] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [directive, setDirective] = useState(null);
 
   const concepts = [
     { title: 'Introduction to Quantum States', duration: '5m', type: 'Video' },
@@ -16,9 +19,26 @@ const Learning = () => {
   ];
 
   useEffect(() => {
+    const fetchDirective = async () => {
+      const data = await adaptiveService.getAdaptationDirective();
+      setDirective(data);
+    };
+    fetchDirective();
+  }, []);
+
+  useEffect(() => {
     if (progress < 100) {
       const timer = setInterval(() => {
         setProgress((old) => Math.min(old + 0.5, 100));
+        
+        // Every 5% progress, send engagement data
+        if (Math.floor(progress) % 5 === 0 && progress > 0) {
+          cognitiveService.updateRealTimeEngagement({
+            session_id: "active", // In real case, use real session ID
+            engagement_score: 0.85,
+            comprehension_speed: "fast"
+          });
+        }
       }, 500);
       return () => clearInterval(timer);
     } else {

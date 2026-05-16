@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Paper, Typography, TextField, Button, IconButton, InputAdornment, Link } from '@mui/material';
 import { Eye, EyeOff, Mail, Lock, LogIn } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../store/slices/authSlice';
 import { motion } from 'framer-motion';
 
 const Login = () => {
@@ -9,12 +10,15 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Logic for login will be added here
-    console.log('Logging in...', email);
-    navigate('/');
+    const result = await dispatch(loginUser({ email, password }));
+    if (loginUser.fulfilled.match(result)) {
+      navigate('/');
+    }
   };
 
   return (
@@ -105,14 +109,21 @@ const Login = () => {
                 </Link>
               </Box>
 
+              {error && (
+                <Typography variant="caption" color="error.main" sx={{ mt: 1 }}>
+                  {error}
+                </Typography>
+              )}
+
               <Button 
                 fullWidth 
                 size="large" 
                 variant="contained" 
                 type="submit"
+                disabled={loading}
                 sx={{ py: 1.5, fontSize: '1rem', mt: 1 }}
               >
-                Sign In
+                {loading ? 'Authenticating...' : 'Sign In'}
               </Button>
 
               <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
