@@ -36,9 +36,9 @@ async def startup_event():
     # Initialize database
     try:
         init_db()
-        print("✓ Database initialized successfully")
+        print("[OK] Database initialized successfully")
     except Exception as e:
-        print(f"✗ Database initialization failed: {e}")
+        print(f"[ERROR] Database initialization failed: {e}")
 
 
 @app.on_event("shutdown")
@@ -95,9 +95,14 @@ async def api_info():
     }
 
 
-# TODO: Include API routers when implemented
-# from app.api.v1 import auth, learners, sessions, content, adaptive, engagement, recommendations, analytics
-# app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
+# Include API routers
+from app.api.v1 import auth, cognitive
+
+app.include_router(auth.router, prefix="/api/v1")
+app.include_router(cognitive.router, prefix="/api/v1")
+
+# TODO: Include additional routers when implemented
+# from app.api.v1 import learners, sessions, content, adaptive, engagement, recommendations, analytics
 # app.include_router(learners.router, prefix="/api/v1/learners", tags=["learners"])
 # app.include_router(sessions.router, prefix="/api/v1/sessions", tags=["sessions"])
 # app.include_router(content.router, prefix="/api/v1/content", tags=["content"])

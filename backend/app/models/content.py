@@ -38,7 +38,7 @@ class Content(Base):
     content_url = Column(Text)
     
     # Metadata
-    metadata = Column(JSONB)  # Additional content metadata
+    content_metadata = Column(JSONB)  # Additional content metadata
     
     # Status
     is_active = Column(String(10), default='active')
@@ -69,7 +69,7 @@ class Content(Base):
             "prerequisites": self.prerequisites,
             "learning_objectives": self.learning_objectives,
             "content_url": self.content_url,
-            "metadata": self.metadata,
+            "content_metadata": self.content_metadata,
             "is_active": self.is_active,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
