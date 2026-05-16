@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:14-alpine
+    container_name: cognitive_learning_db
+    environment:
+      POSTGRES_DB: cognitive_learning
+      POSTGRES_USER: cognitive_user
+      POSTGRES_PASSWORD: cognitive_pass_2024
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cognitive_user -d cognitive_learning"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cognitive_network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: cognitive_learning_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cognitive_network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cognitive_learning_backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://cognitive_user:cognitive_pass_2024@db:5432/cognitive_learning
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - SECRET_KEY=dev-secret-key-change-in-production-min-32-chars
+      - DEBUG=True
+      - BACKEND_CORS_ORIGINS=["http://localhost:3000","http://localhost:8000"]
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - cognitive_network
+
+  # Celery Worker
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cognitive_learning_celery
+    command: celery -A app.tasks.celery_app worker --loglevel=info
+    volumes:
+      - ./backend:/app
+    environment:
+      - DATABASE_URL=postgresql://cognitive_user:cognitive_pass_2024@db:5432/cognitive_learning
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - SECRET_KEY=dev-secret-key-change-in-production-min-32-chars
+    depends_on:
+      - db
+      - redis
+      - backend
+    networks:
+      - cognitive_network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cognitive_learning_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_WS_URL=ws://localhost:8000
+      - REACT_APP_ENV=development
+    depends_on:
+      - backend
+    networks:
+      - cognitive_network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  cognitive_network:
+    driver: bridge
+
+# Made with Bob
