@@ -10,30 +10,33 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay }}
     viewport={{ once: true }}
+    style={{ display: 'flex', width: '100%', height: '100%' }}
   >
     <Card sx={{ 
       height: '100%', 
+      maxWidth: 340,
+      mx: 'auto',
       background: 'rgba(255, 255, 255, 0.03)', 
-      borderColor: 'rgba(255, 255, 255, 0.1)',
+      border: '1px solid rgba(255, 255, 255, 0.08)',
       transition: 'transform 0.3s ease',
-      '&:hover': { transform: 'translateY(-8px)', background: 'rgba(255, 255, 255, 0.05)' }
+      '&:hover': { transform: 'translateY(-4px)', background: 'rgba(255, 255, 255, 0.05)' }
     }}>
-      <CardContent sx={{ p: 4 }}>
+      <CardContent sx={{ p: 2.5 }}>
         <Box sx={{ 
-          width: 48, 
-          height: 48, 
-          borderRadius: 2, 
+          width: 36, 
+          height: 36, 
+          borderRadius: 1.5, 
           background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          mb: 3,
+          mb: 1.5,
           color: 'white'
         }}>
-          <Icon size={24} />
+          <Icon size={18} />
         </Box>
-        <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>{title}</Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1, lineHeight: 1.2 }}>{title}</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.5, fontSize: '0.85rem' }}>
           {description}
         </Typography>
       </CardContent>
@@ -172,13 +175,13 @@ const Landing = () => {
       </Box>
 
       {/* Features Section */}
-      <Container maxWidth="lg" sx={{ py: 15 }}>
+      <Container maxWidth="lg" sx={{ py: 8 }}>
         <Box sx={{ textAlign: 'center', mb: 10 }}>
           <Typography variant="h2" sx={{ fontWeight: 900, mb: 2 }}>Intelligent Ecosystem</Typography>
           <Typography variant="h6" color="text.secondary">Everything you need to master any subject, at your own pace.</Typography>
         </Box>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={4} sx={{ display: 'flex' }}>
             <FeatureCard 
               icon={Brain}
               title="Cognitive Profiling"
@@ -186,7 +189,7 @@ const Landing = () => {
               delay={0.1}
             />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} sm={4} sx={{ display: 'flex' }}>
             <FeatureCard 
               icon={Cpu}
               title="Adaptive Engine"
@@ -194,7 +197,7 @@ const Landing = () => {
               delay={0.2}
             />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} sm={4} sx={{ display: 'flex' }}>
             <FeatureCard 
               icon={Target}
               title="Precision Analytics"
