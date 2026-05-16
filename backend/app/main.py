@@ -96,10 +96,12 @@ async def api_info():
 
 
 # Include API routers
-from app.api.v1 import auth, cognitive
+from app.api.v1 import auth, cognitive, adaptive, recommendations
 
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(cognitive.router, prefix="/api/v1")
+app.include_router(adaptive.router, prefix="/api/v1")
+app.include_router(recommendations.router, prefix="/api/v1")
 
 # TODO: Include additional routers when implemented
 # from app.api.v1 import learners, sessions, content, adaptive, engagement, recommendations, analytics
