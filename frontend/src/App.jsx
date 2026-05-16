@@ -7,6 +7,7 @@ import Sidebar from './components/layout/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Learning from './pages/Learning';
 import Login from './pages/Login';
+import Landing from './pages/Landing';
 
 const Layout = ({ children }) => (
   <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -29,7 +30,7 @@ function App() {
         <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
         
         <Route path="/" element={
-          isAuthenticated ? <Layout><Dashboard /></Layout> : <Navigate to="/login" />
+          isAuthenticated ? <Layout><Dashboard /></Layout> : <Landing />
         } />
         
         <Route path="/learning" element={
