@@ -66,7 +66,7 @@ const Landing = () => {
       {/* Hero Section */}
       <Box sx={{ 
         pt: { xs: 10, md: 15 }, 
-        pb: { xs: 10, md: 20 },
+        pb: { xs: 4, md: 6 },
         position: 'relative'
       }}>
         <Container maxWidth="lg">
@@ -175,8 +175,8 @@ const Landing = () => {
       </Box>
 
       {/* Features Section */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Box sx={{ textAlign: 'center', mb: 10 }}>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Box sx={{ textAlign: 'center', mb: 5 }}>
           <Typography variant="h2" sx={{ fontWeight: 900, mb: 2 }}>Intelligent Ecosystem</Typography>
           <Typography variant="h6" color="text.secondary">Everything you need to master any subject, at your own pace.</Typography>
         </Box>
@@ -210,7 +210,7 @@ const Landing = () => {
 
       {/* CTA Section */}
       <Box sx={{ 
-        py: 15, 
+        py: 6, 
         background: 'linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)',
         textAlign: 'center'
       }}>
